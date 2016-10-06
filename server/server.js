@@ -41,16 +41,47 @@ const Game = mongoose.model('game', {
 			}
 		}
 	]
+// =======
+// 	users : {
+// 		user1 : {
+// 			username: {type: String, default: ""},
+// 			increase: Number
+// 		},
+// 		user2 : {
+// 			username: {type: String, default: ""},
+// 			increase: Number
+// 		},
+// 		user3 : {
+// 			username: {type: String, default: ""},
+// 			increase: Number
+// 		},
+// 		user4 : {
+// 			username: {type: String, default: ""},
+// 			increase: Number
+// 		}
+// 	},
+//   numberOfUsers: {type: Number, default: 0}
+// >>>>>>> aa01a14c0f9fb442477c64e353f09a7495ce9056
 })
 
-const hasTwoPlayers = (game) => {
-  return game.player1 && game.player2
-};
+const addPlayerToGame = (game) => {
+  if(game.users.length === 1) {
+    Game
+      .findByIdAndUpdate(game._id, {users: {$push: {"user": {"username": "Test2", "increase": 2.5}}},  {new: true})
+      .then(g => startGameCountdown(g))
+  } else if(game.users.length === 2) {
+    Game
+      .findByIdAndUpdate(game._id, {users: {$push: {"user": {"username": "Test3", "increase": 2.5}}}, () => {})
+  } else if (game.users.length  === 3) {
+    Game
+      .findByIdAndUpdate(game._id, {users: {$push: {"user": {"username": "Test4", "increase": 2.5}}}, () => {})
+    }
+}
+
 
 const startGameCountdown = (game) => {
-  if (hasTwoPlayers) {
-    setTimeout(startGame, 3000);
-  };
+  console.log('countdown started')
+  setTimeout(startGame, 10000);
 };
 
 const startGame = (game) => {
@@ -96,7 +127,8 @@ io.on('connect', socket => {
       return game
     })
     .then((game) => {
-      startGameCountdown(game)
+        game = addPlayerToGame(game);
+        io.to(game._id).emit('player joined', game);
     })
 
   console.log(`Socket connectd: ${socket.id}`);
