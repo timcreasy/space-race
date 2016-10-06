@@ -1,3 +1,46 @@
-h1 {
-  color: red;
+* {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	height: 100vh;
+}
+.mainContainer {
+	display: flex;
+	flex-direction: row;
+	height: 80%;
+}
+
+.gameBoard {
+	height: 100%;
+	width: 80%;
+}
+
+.shipContainer {
+	height: 100%;
+	display: flex;
+	flex-direction: row;
+	align-items: flex-end;
+	justify-content: space-around;
+}
+
+.leftContainer {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	width: 20%;
+	height: 100%;
+	background-color: gray;
+}
+
+.bottomContainer {
+	height: 20%;
+	width: 100%;
+	background-color: green;
+}
+
+.ship {
+	transform: rotate(-90deg);
+	margin-bottom: 2rem;
 }

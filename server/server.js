@@ -17,9 +17,30 @@ app.set('view engine', 'pug');
 app.use(express.static('public'));
 
 app.get('/', (req, res) => res.render('home'));
-
+mongoose.Promise = Promise
 mongoose.connect(MONGODB_URL, () => {
   server.listen(PORT, () => {
     console.log(`Server listening on port: ${PORT}...`);
   });
 });
+
+const Game = mongoose.model('game', {
+	users : {
+		user1 : {
+			username: String,
+			increase: Number
+		},
+		user2 : {
+			username: String,
+			increase: Number
+		},
+		user3 : {
+			username: String,
+			increase: Number
+		},
+		user4 : {
+			username: String,
+			increase: Number
+		}
+	}
+})
