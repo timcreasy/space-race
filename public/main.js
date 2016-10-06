@@ -12,3 +12,8 @@ $(window).keyup(function (evt) {
 
 })
 
+const socket = io();
+
+socket.on('connect', () => console.dir(socket));
+socket.on('disconnect', () => console.log(`Socket disconnected`));
+socket.on('player joined', (game) => console.log(game))
