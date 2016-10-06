@@ -1,5 +1,7 @@
 'use strict';
 
+const socket = io();
+
 let increase = 2.5;
 $(window).keyup(function (evt) {
 		if (evt.which === 32) {
@@ -9,10 +11,7 @@ $(window).keyup(function (evt) {
 				console.log("You win")
 			}
 		}
-
 })
-
-const socket = io();
 
 socket.on('connect', () => console.dir(socket));
 socket.on('disconnect', () => console.log(`Socket disconnected`));

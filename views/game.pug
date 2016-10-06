@@ -6,17 +6,13 @@ html
 	body
 		.mainContainer
 			.leftContainer
-				h3 Player 1
-				h3 Player 2
-				h3 Player 3
-				h3 Player 4
+				for player in users
+					h3= player.user.username
 			.gameBoard
 				.background
 				.shipContainer
-					.ship Player 1
-					.ship Player 2
-					.ship Player 3
-					.ship Player 4
+					for player in users
+						.ship= player.user.username
 		.bottomContainer Test
 		script(src='/socket.io/socket.io.js')
 		script(src="/lib/jquery/dist/jquery.min.js")
