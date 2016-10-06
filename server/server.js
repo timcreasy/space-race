@@ -16,32 +16,47 @@ const MONGODB_URL = process.env.MONGODB_URL || 'mongodb://localhost:27017/spacer
 const Game = mongoose.model('game', {
 	users : {
 		user1 : {
-			username: String,
+			username: {type: String, default: ""},
 			increase: Number
 		},
 		user2 : {
-			username: String,
+			username: {type: String, default: ""},
 			increase: Number
 		},
 		user3 : {
-			username: String,
+			username: {type: String, default: ""},
 			increase: Number
 		},
 		user4 : {
-			username: String,
+			username: {type: String, default: ""},
 			increase: Number
 		}
-	}
+	},
+  numberOfUsers: {type: Number, default: 0}
 })
 
-const hasTwoPlayers = (game) => {
-  return game.player1 && game.player2
-};
+const addPlayerToGame = (game) => {
+  if (game.numberOfUsers === 0) {
+    Game
+      .findByIdAndUpdate(game._id, {$set: {"users.user1.username": "Alex", 'numberOfUsers': 1}}, () => {})
+  }
+  else if(game.numberOfUsers === 1) {
+    Game
+      .findByIdAndUpdate(game._id, {$set: {"users.user2.username": "Tom", 'numberOfUsers': 2}},  {new: true})
+      .then(g => startGameCountdown(g))
+  } else if(game.numberOfUsers === 2) {
+    Game
+      .findByIdAndUpdate(game._id, {$set: {"users.user3.username": "Mike", 'numberOfUsers': 3}}, () => {})
+  } else if (game.numberOfUsers  === 3) {
+    Game
+      .findByIdAndUpdate(game._id, {$set: {"users.user4.username": "Ty", 'numberOfUsers': 4}}, () => {})
+    }
+}
+
 
 const startGameCountdown = (game) => {
-  if (hasTwoPlayers) {
-    setTimeout(startGame, 3000);
-  };
+  console.log('countdown started')
+  setTimeout(startGame, 10000);
 };
 
 const startGame = (game) => {
@@ -57,7 +72,7 @@ app.get('/', (req, res) => res.render('home'));
 
 app.get('/game/create', (req, res, err) => {
     Game
-      .create({player1: 'Alex', player2: 'Daniel'})
+      .create({})
       .then(obj => res.redirect(`/game/${obj._id}`))
       .catch(err, () => console.log(err))
 })
@@ -78,7 +93,8 @@ io.on('connect', socket => {
       return game
     })
     .then((game) => {
-      startGameCountdown(game)
+        game = addPlayerToGame(game);
+        io.to(game._id).emit('player joined', game);
     })
 
   console.log(`Socket connectd: ${socket.id}`);
