@@ -41,40 +41,19 @@ const Game = mongoose.model('game', {
 			}
 		}
 	]
-// =======
-// 	users : {
-// 		user1 : {
-// 			username: {type: String, default: ""},
-// 			increase: Number
-// 		},
-// 		user2 : {
-// 			username: {type: String, default: ""},
-// 			increase: Number
-// 		},
-// 		user3 : {
-// 			username: {type: String, default: ""},
-// 			increase: Number
-// 		},
-// 		user4 : {
-// 			username: {type: String, default: ""},
-// 			increase: Number
-// 		}
-// 	},
-//   numberOfUsers: {type: Number, default: 0}
-// >>>>>>> aa01a14c0f9fb442477c64e353f09a7495ce9056
 })
 
 const addPlayerToGame = (game) => {
   if(game.users.length === 1) {
     Game
-      .findByIdAndUpdate(game._id, {users: {$push: {"user": {"username": "Test2", "increase": 2.5}}},  {new: true})
+      .findByIdAndUpdate(game._id, {users: {$push: {"users": {"username": "Test2", "increase": 2.5}}}},  {new: true})
       .then(g => startGameCountdown(g))
   } else if(game.users.length === 2) {
     Game
-      .findByIdAndUpdate(game._id, {users: {$push: {"user": {"username": "Test3", "increase": 2.5}}}, () => {})
+      .findByIdAndUpdate(game._id, {users: {$push: {"user": {"username": "Test3", "increase": 2.5}}}}, () => {})
   } else if (game.users.length  === 3) {
     Game
-      .findByIdAndUpdate(game._id, {users: {$push: {"user": {"username": "Test4", "increase": 2.5}}}, () => {})
+      .findByIdAndUpdate(game._id, {users: {$push: {"user": {"username": "Test4", "increase": 2.5}}}}, () => {})
     }
 }
 
@@ -99,20 +78,36 @@ app.get('/', (req, res) => res.render('home'));
 app.post('/', (req, res) => {
 	Game
 		.create({ users: { user: { username: req.body.username, increase: 2.5 }}})
-		.then(obj => res.redirect(`/game/${obj._id}`))
+		.then(obj => {
+			console.log(obj);
+			res.redirect(`/game/${obj._id}`)
+		})
 		.catch(console.error)
 })
 
 app.get('/game/:id', (req, res) => {
-	let playerId = req.params.id
-	let userArr = []
-	Game
-		.find({ _id: playerId })
-		.then(obj => {
-			console.log(obj[0])
-			res.render('game', obj[0])
-		})
-		.catch(console.error)
+	let gameId = req.params.id
+
+	if (req.query.user) {
+		Game
+			.findByIdAndUpdate(gameId, {$push: {"users": {user: {"username": "Test2", "increase": 2.5}}}},  {new: true})
+			.then(game => {
+				console.log("GAME", game);
+				res.render('game', game);
+			})
+	} else {
+
+		console.log("IN FIRST GAME CREATE");
+
+		Game
+			.find({ _id: gameId })
+			.then(game => {
+				res.render('game', game[0])
+			})
+			.catch(console.error)
+
+	}
+
 })
 
 io.on('connect', socket => {
@@ -127,7 +122,7 @@ io.on('connect', socket => {
       return game
     })
     .then((game) => {
-        game = addPlayerToGame(game);
+        // game = addPlayerToGame(game);
         io.to(game._id).emit('player joined', game);
     })
 
