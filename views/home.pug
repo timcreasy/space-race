@@ -4,9 +4,13 @@ html
 		title Space Race
 		link(rel="stylesheet" href="/main.css")
 	body
-		h1 Dat boi
-		ul 
-			li: a(href='/game/create') create
-			
+		h1 Space Race, y'all
+		form(method='POST')
+			label(for='username') Pick a username
+			input(type='text' name='username')
+			button(type='submit') Create a game!
 
+
+		script(src='/socket.io/socket.io.js')
 		script(src="/lib/jquery/dist/jquery.min.js")
+		script(src="/main.js")

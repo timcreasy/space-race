@@ -2,6 +2,7 @@
 
 const express = require('express');
 const { Server } = require('http');
+const bodyParser = require('body-parser')
 const mongoose = require('mongoose');
 const socketio = require('socket.io');
 
@@ -14,42 +15,66 @@ const MONGODB_URL = process.env.MONGODB_URL || 'mongodb://localhost:27017/spacer
 
 
 const Game = mongoose.model('game', {
-	users : {
-		user1 : {
-			username: {type: String, default: ""},
-			increase: Number
+	users : [
+		{
+			user : {
+				username: String,
+				increase: Number
+			}
 		},
-		user2 : {
-			username: {type: String, default: ""},
-			increase: Number
+		{
+			user : {
+				username: String,
+				increase: Number
+			}
 		},
-		user3 : {
-			username: {type: String, default: ""},
-			increase: Number
+		{
+			user : {
+				username: String,
+				increase: Number
+			}
 		},
-		user4 : {
-			username: {type: String, default: ""},
-			increase: Number
+		{
+			user: {
+				username: String,
+				increase: Number
+			}
 		}
-	},
-  numberOfUsers: {type: Number, default: 0}
+	]
+// =======
+// 	users : {
+// 		user1 : {
+// 			username: {type: String, default: ""},
+// 			increase: Number
+// 		},
+// 		user2 : {
+// 			username: {type: String, default: ""},
+// 			increase: Number
+// 		},
+// 		user3 : {
+// 			username: {type: String, default: ""},
+// 			increase: Number
+// 		},
+// 		user4 : {
+// 			username: {type: String, default: ""},
+// 			increase: Number
+// 		}
+// 	},
+//   numberOfUsers: {type: Number, default: 0}
+// >>>>>>> aa01a14c0f9fb442477c64e353f09a7495ce9056
 })
 
 const addPlayerToGame = (game) => {
-  if (game.numberOfUsers === 0) {
+  if(game.users.length === 1) {
     Game
-      .findByIdAndUpdate(game._id, {$set: {"users.user1.username": "Alex", 'numberOfUsers': 1}}, () => {})
-  }
-  else if(game.numberOfUsers === 1) {
-    Game
-      .findByIdAndUpdate(game._id, {$set: {"users.user2.username": "Tom", 'numberOfUsers': 2}},  {new: true})
+      .findByIdAndUpdate(game._id, {users: {$push: {"user": {"username": "Test2", "increase": 2.5}}},  {new: true})
       .then(g => startGameCountdown(g))
-  } else if(game.numberOfUsers === 2) {
+  } else if(game.users.length === 2) {
     Game
-      .findByIdAndUpdate(game._id, {$set: {"users.user3.username": "Mike", 'numberOfUsers': 3}}, () => {})
-  } else if (game.numberOfUsers  === 3) {
+      .findByIdAndUpdate(game._id, {users: {$push: {"user": {"username": "Test3", "increase": 2.5}}}, () => {})
+  } else if (game.users.length  === 3) {
     Game
-      .findByIdAndUpdate(game._id, {$set: {"users.user4.username": "Ty", 'numberOfUsers': 4}}, () => {})
+      .findByIdAndUpdate(game._id, {users: {$push: {"user": {"username": "Test4", "increase": 2.5}}}, () => {})
     }
 }
 
@@ -67,18 +92,27 @@ const startGame = (game) => {
 app.set('view engine', 'pug');
 
 app.use(express.static('public'));
+app.use(bodyParser.urlencoded({ extended: false}))
 
 app.get('/', (req, res) => res.render('home'));
 
-app.get('/game/create', (req, res, err) => {
-    Game
-      .create({})
-      .then(obj => res.redirect(`/game/${obj._id}`))
-      .catch(err, () => console.log(err))
+app.post('/', (req, res) => {
+	Game
+		.create({ users: { user: { username: req.body.username, increase: 2.5 }}})
+		.then(obj => res.redirect(`/game/${obj._id}`))
+		.catch(console.error)
 })
 
 app.get('/game/:id', (req, res) => {
-  res.render('game')
+	let playerId = req.params.id
+	let userArr = []
+	Game
+		.find({ _id: playerId })
+		.then(obj => {
+			console.log(obj[0])
+			res.render('game', obj[0])
+		})
+		.catch(console.error)
 })
 
 io.on('connect', socket => {
@@ -88,7 +122,7 @@ io.on('connect', socket => {
     .findById(id)
     .then(game => {
       socket.gameId = game._id;
-      socket.join(game._id);  
+      socket.join(game._id);
       io.to(game._id).emit('player joined', game)
       return game
     })
