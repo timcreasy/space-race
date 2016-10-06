@@ -87,27 +87,20 @@ app.post('/', (req, res) => {
 
 app.get('/game/:id', (req, res) => {
 	let gameId = req.params.id
-
 	if (req.query.user) {
 		Game
-			.findByIdAndUpdate(gameId, {$push: {"users": {user: {"username": "Test2", "increase": 2.5}}}},  {new: true})
+			.findByIdAndUpdate(gameId, {$push: {"users": {user: {"username": req.query.user, "increase": 2.5}}}},  {new: true})
 			.then(game => {
-				console.log("GAME", game);
 				res.render('game', game);
 			})
 	} else {
-
-		console.log("IN FIRST GAME CREATE");
-
 		Game
 			.find({ _id: gameId })
 			.then(game => {
 				res.render('game', game[0])
 			})
 			.catch(console.error)
-
 	}
-
 })
 
 io.on('connect', socket => {
@@ -122,7 +115,6 @@ io.on('connect', socket => {
       return game
     })
     .then((game) => {
-        // game = addPlayerToGame(game);
         io.to(game._id).emit('player joined', game);
     })
 
