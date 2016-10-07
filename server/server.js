@@ -43,21 +43,6 @@ const Game = mongoose.model('game', {
 	]
 })
 
-const addPlayerToGame = (game) => {
-  if(game.users.length === 1) {
-    Game
-      .findByIdAndUpdate(game._id, {users: {$push: {"users": {"username": "Test2", "increase": 2.5}}}},  {new: true})
-      .then(g => startGameCountdown(g))
-  } else if(game.users.length === 2) {
-    Game
-      .findByIdAndUpdate(game._id, {users: {$push: {"user": {"username": "Test3", "increase": 2.5}}}}, () => {})
-  } else if (game.users.length  === 3) {
-    Game
-      .findByIdAndUpdate(game._id, {users: {$push: {"user": {"username": "Test4", "increase": 2.5}}}}, () => {})
-    }
-}
-
-
 const startGameCountdown = (game) => {
   console.log('countdown started')
   setTimeout(startGame, 10000);
@@ -66,7 +51,6 @@ const startGameCountdown = (game) => {
 const startGame = (game) => {
   console.log('game started')
 };
-
 
 app.set('view engine', 'pug');
 
@@ -93,18 +77,21 @@ app.get('/game/:id', (req, res) => {
 			.then(game => {
 				res.render('game', game);
 			})
+			.catch(console.error);
 	} else {
 		Game
 			.find({ _id: gameId })
 			.then(game => {
 				res.render('game', game[0])
 			})
-			.catch(console.error)
+			.catch(console.error);
 	}
 })
 
 io.on('connect', socket => {
   const id = socket.handshake.headers.referer.split('/').slice(-1)[0];
+
+	console.log(socket);
 
   Game
     .findById(id)
@@ -112,13 +99,9 @@ io.on('connect', socket => {
       socket.gameId = game._id;
       socket.join(game._id);
       io.to(game._id).emit('player joined', game)
-      return game
-    })
-    .then((game) => {
-        io.to(game._id).emit('player joined', game);
     })
 
-  console.log(`Socket connectd: ${socket.id}`);
+  console.log(`Socket connected: ${socket.id}`);
   socket.on('disconnect', () => console.log('socket disconnected'));
 })
 
