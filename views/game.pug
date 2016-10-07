@@ -7,12 +7,12 @@ html
 		.mainContainer
 			.leftContainer
 				for player in users
-					h3= player.user.username
+					h3= player.username
 			.gameBoard
 				.background
 				.shipContainer
 					for player in users
-						.ship= player.user.username
+						.ship= player.username
 		.bottomContainer Test
 		script(src='/socket.io/socket.io.js')
 		script(src="/lib/jquery/dist/jquery.min.js")

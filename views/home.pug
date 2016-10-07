@@ -13,12 +13,11 @@ html
 		h1 Join a game
 			.joinGame
 				for game in games
-					if game.users.length < 4
-						h5 #{game.id}
-						form(method='POST' action='/join')
-							input(type='text' name='username' placeholder='Pick a username')
-							input(type='hidden' value=`${game.id}` name='id')
-							button(type='submit') Join a game
+					h5 #{game.id}
+					form(method='POST' action='/join')
+						input(type='text' name='username' placeholder='Pick a username')
+						input(id="usernameInput" type='hidden' value=`${game.id}` name='id')
+						button(id="submitButton" type='submit') Join a game
 
 
 		script(src='/socket.io/socket.io.js')
