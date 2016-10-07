@@ -7,6 +7,7 @@ $(window).keyup(function (evt) {
 		if (evt.which === 32) {
 			$(".ship").css({'margin-bottom': `${increase}rem`})
 			increase = increase + .5
+			socket.emit('player moved', {socket});
 			if (increase === 36.5) {
 				console.log("You win")
 			}
