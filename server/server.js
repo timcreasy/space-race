@@ -57,16 +57,33 @@ app.set('view engine', 'pug');
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false}))
 
-app.get('/', (req, res) => res.render('home'));
+// app.get('/', (req, res) => res.render('home'));
+
+app.get('/', (req, res) =>
+  Game.find()
+  .or([{ user: { $exists: false } }, { user: { $exists: false } }])
+  .exists('result', false)
+  .then(games => {
+  	res.render('home', { games })
+  })
+)
 
 app.post('/', (req, res) => {
 	Game
 		.create({ users: { user: { username: req.body.username, increase: 2.5 }}})
 		.then(obj => {
-			console.log(obj);
 			res.redirect(`/game/${obj._id}`)
 		})
 		.catch(console.error)
+})
+
+app.post('/join', (req, res) => {
+	console.log("my req", req.body)
+	Game
+		.findByIdAndUpdate(req.body.id, {$push: {"users": {user: {"username": req.body.username, "increase": 2.5}}}},  {new: true})
+		.then(game => {
+			res.redirect(`/game/${game._id}`)
+		})
 })
 
 app.get('/game/:id', (req, res) => {
@@ -90,9 +107,6 @@ app.get('/game/:id', (req, res) => {
 
 io.on('connect', socket => {
   const id = socket.handshake.headers.referer.split('/').slice(-1)[0];
-
-	console.log(socket);
-
   Game
     .findById(id)
     .then(game => {
