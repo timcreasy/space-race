@@ -30,6 +30,16 @@ let updatePlayerList = (users) => {
 	updatePosition(users);
 }
 
+let checkForWinners = (users) => {
+
+	users.forEach((user) => {
+		if (user.increase === 36.5) {
+			return user;
+		}
+	})
+	return false;
+}
+
 
 socket.on('connect', () => {
 	const username = window.location.search.split('=').slice(-1)[0];;
@@ -41,6 +51,9 @@ socket.on('player found', (data) => {
 });
 socket.on('update game', ({users}) => {
 	updatePlayerList(users);
+});
+socket.on('player won', ({winner}) => {
+	alert(`${winner.username} won the game!`);
 });
 socket.on('update player', ({player}) => {
 	console.log(`${player.username} moved - ${player.increase}`);
