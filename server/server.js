@@ -84,6 +84,11 @@ io.on('connect', socket => {
 			.find({$and: [{gameid: id}, {username: player.username}]})
 			.then((user) => {
 				socket.emit('player found', {player: user[0]});
+				User
+					.find({gameid: id})
+					.then(users => {
+						io.emit('update game', {users: users})
+					})
 			})
 	});
 
@@ -92,6 +97,11 @@ io.on('connect', socket => {
 			.findByIdAndUpdate(player._id, {$set:{increase: player.increase}}, {new: true})
 			.then((user) => {
 				io.emit('update player', {player: user});
+				User
+					.find({gameid: id})
+					.then(users => {
+						io.emit('update game', {users: users})
+					})
 			})
 	})
 })

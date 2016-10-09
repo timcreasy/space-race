@@ -42,5 +42,5 @@ body {
 
 .ship {
 	transform: rotate(-90deg);
-	margin-bottom: 2rem;
+	/*margin-bottom: 2rem;*/
 }

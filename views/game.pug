@@ -5,15 +5,17 @@ html
 		link(rel="stylesheet" href="/main.css")
 	body
 		.mainContainer
-			.leftContainer
+			#playerSidebar.leftContainer
 				for player in users
 					h3= player.username
 			.gameBoard
 				.background
-				.shipContainer
+				#playerList.shipContainer
 					for player in users
 						.ship= player.username
 		.bottomContainer Test
+		script(type="text/javascript").
+			var users = !{JSON.stringify(users)};
 		script(src='/socket.io/socket.io.js')
 		script(src="/lib/jquery/dist/jquery.min.js")
 		script(src="/main.js")
