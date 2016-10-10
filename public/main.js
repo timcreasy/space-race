@@ -16,18 +16,27 @@ let updatePosition = (users) => {
 	})
 }
 
+let addStyling = (users) => {
+		let spacing = 0
+		users.forEach((user) => {
+				spacing = spacing + 50
+				$(`#${user._id}`).css('left', `${spacing}px`);
+		})
+}
+
 let updatePlayerList = (users) => {
 	let playerList = "";
-	let spacing = 0
+	// let spacing = 0
 	$('#playerList').html();
 	$('#playerSidebar').html();
 	users.forEach((user) => {
-		spacing = spacing + 50
+		// spacing = spacing + 50
 		playerList += `<div id="${user._id}" class="ship">${user.username}</div>`;
-		$(`#${user._id}`).css('left', `${spacing}px`);
+		// $(`#${user._id}`).css('left', `${spacing}px`);
 		console.log(user)
 	});
 	$('#playerList').html(playerList);
+	addStyling(users);
 	updatePosition(users);
 }
 
