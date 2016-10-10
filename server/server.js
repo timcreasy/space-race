@@ -107,7 +107,8 @@ io.on('connect', socket => {
 					.find({gameid: id})
 					.then(users => {
 						users.forEach((user) => {
-							if (user.increase === -1) {
+							console.log(user.increase);
+							if (user.increase <= -1) {
 								return io.to(id).emit('player won', {winner: user});
 							}
 						})
