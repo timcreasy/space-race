@@ -48,7 +48,7 @@ app.post('/', (req, res) => {
 		.create({numofPlayers: 1})
 		.then((obj) => {
 			User
-				.create({username: req.body.username, increase: 2.5, gameid: obj._id})
+				.create({username: req.body.username, increase: 34, gameid: obj._id})
 				.then((obj) => {
 					res.redirect(`/game/${obj.gameid}?username=${obj.username}`)
 				})
@@ -58,7 +58,7 @@ app.post('/', (req, res) => {
 
 app.post('/join', (req, res) => {
 	User
-		.create({ username: req.body.username, increase: 2.5, gameid: req.body.id})
+		.create({ username: req.body.username, increase: 34, gameid: req.body.id})
 		.then((obj) =>{
 			res.redirect(`/game/${obj.gameid}?username=${obj.username}`)
 		})
@@ -102,7 +102,7 @@ io.on('connect', socket => {
 					.find({gameid: id})
 					.then(users => {
 						users.forEach((user) => {
-							if (user.increase === 35) {
+							if (user.increase === -1) {
 								return io.to(id).emit('player won', {winner: user});
 							}
 						})

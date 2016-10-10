@@ -3,17 +3,19 @@ html
 	head
 		title Space Race
 		link(rel="stylesheet" href="/main.css")
+		link(rel="stylesheet" href="https://fonts.googleapis.com/css?family=VT323")
 	body
 		.mainContainer
-			#playerSidebar.leftContainer
-				for player in users
-					h3= player.username
+			.title Space Race
+			hr.line
 			.gameBoard
-				.background
+				#background
 				#playerList.shipContainer
 					for player in users
 						.ship= player.username
-		.bottomContainer Test
+			.moon
+				img(src='/assets/Moon-Transparent-PNG%20copy.png')
+		.bottomContainer
 		script(type="text/javascript").
 			var users = !{JSON.stringify(users)};
 		script(src='/socket.io/socket.io.js')

@@ -5,35 +5,45 @@ let player;
 
 $(window).keyup(function (evt) {
 		if (evt.which === 32) {
-			player.increase = player.increase + .5
+			player.increase = player.increase - .75
 			socket.emit('player moved', {player: player});
 		}
 })
 
 let updatePosition = (users) => {
 	users.forEach((user) => {
-		$("#" + user._id).css({'margin-bottom': `${user.increase}rem`})
+		$("#" + user._id).css({'top': `${user.increase}rem`})
 	})
+}
+
+let addStyling = (users) => {
+		let spacing = 0
+		users.forEach((user) => {
+				spacing = spacing + 17
+				$(`#${user._id}`).css('left', `${spacing}%`);
+		})
 }
 
 let updatePlayerList = (users) => {
 	let playerList = "";
-	let playerSidebar = "";
+	// let spacing = 0
 	$('#playerList').html();
 	$('#playerSidebar').html();
 	users.forEach((user) => {
+		// spacing = spacing + 50
 		playerList += `<div id="${user._id}" class="ship">${user.username}</div>`;
-		playerSidebar += `<h3>${user.username}</h3>`;
+		// $(`#${user._id}`).css('left', `${spacing}px`);
+		console.log(user)
 	});
 	$('#playerList').html(playerList);
-	$('#playerSidebar').html(playerSidebar);
+	addStyling(users);
 	updatePosition(users);
 }
 
 let checkForWinners = (users) => {
 
 	users.forEach((user) => {
-		if (user.increase === 36.5) {
+		if (user.increase === -1) {
 			return user;
 		}
 	})
