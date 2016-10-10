@@ -93,6 +93,11 @@ io.on('connect', socket => {
 			})
 	});
 
+	socket.on('remove game', ({gameId}) => {
+		Game
+			.findByIdAndRemove(gameId, () => {});
+	});
+
 	socket.on('player moved', ({player}) => {
 		User
 			.findByIdAndUpdate(player._id, {$set:{increase: player.increase}}, {new: true})

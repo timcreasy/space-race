@@ -64,6 +64,9 @@ socket.on('update game', ({users}) => {
 });
 socket.on('player won', ({winner}) => {
 	alert(`${winner.username} won the game!`);
+	const gameId = window.location.pathname.split('/').slice(-1)[0]
+	socket.emit('remove game', {gameId: gameId});
+	window.location.replace(window.location.origin);
 });
 socket.on('update player', ({player}) => {
 	console.log(`${player.username} moved - ${player.increase}`);
