@@ -15,7 +15,7 @@ Space Race utilizes web sockets for realtime communication between players withi
 ### Contributors
 
 Space Race was made by the following:
-- Tyler Daniels - [Github](https://github.com/iamtylerd)
+- Tyler Daniel - [Github](https://github.com/iamtylerd)
 - Tim Creasy - [Github](https://github.com/timcreasy)
 - Josh Philips - [Github](https://github.com/jmphilips)
 - Alex Horton - [Github](https://github.com/alexhortonmusic)
