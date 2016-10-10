@@ -4,17 +4,23 @@ html
 		title Space Race
 		link(rel="stylesheet" href="/main.css")
 	body
-		h1 Space Race, y'all
-		form(method='POST')
-			label(for='username') Pick a username
-			input(type='text' name='username')
-			button(type='submit') Create a game!
-		hr
-		h1 Join a game
-			.joinGame
-				for game in games
-					h5 #{game.id}
-					form(method='POST' action='/join')
-						input(type='text' name='username' placeholder='Pick a username')
-						input(id="usernameInput" type='hidden' value=`${game.id}` name='id')
-						button(id="submitButton" type='submit') Join a game
+		.homeConatiner
+			.header
+				.title
+					h3 Space Race, y'all
+				.description
+					p Hit the "Space" button as fast as possible!
+				.createForm
+					form(method='POST')
+						label(for='username') Pick a username
+						input(type='text' name='username')
+						button(type='submit') Create a game!
+			hr
+			h1 Join a game
+				.joinGame
+					for game in games
+						h5 #{game.id}
+						form(method='POST' action='/join')
+							input(type='text' name='username' placeholder='Pick a username')
+							input(id="usernameInput" type='hidden' value=`${game.id}` name='id')
+							button(id="submitButton" type='submit') Join a game

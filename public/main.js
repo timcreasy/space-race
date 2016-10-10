@@ -5,7 +5,7 @@ let player;
 
 $(window).keyup(function (evt) {
 		if (evt.which === 32) {
-			player.increase = player.increase - .5
+			player.increase = player.increase - .75
 			socket.emit('player moved', {player: player});
 		}
 })
@@ -19,8 +19,8 @@ let updatePosition = (users) => {
 let addStyling = (users) => {
 		let spacing = 0
 		users.forEach((user) => {
-				spacing = spacing + 50
-				$(`#${user._id}`).css('left', `${spacing}px`);
+				spacing = spacing + 17
+				$(`#${user._id}`).css('left', `${spacing}%`);
 		})
 }
 
